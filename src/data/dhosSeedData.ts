@@ -45,6 +45,29 @@ export const initialHospitalConfig: HospitalConfig = {
   }
 };
 
+export const initialHospitals: HospitalConfig[] = [
+  initialHospitalConfig,
+  {
+    id: 'HOSP-002',
+    name: 'Royal Northern Health Network',
+    code: 'RNHN-AU',
+    financialYear: '2026-2027',
+    timeZone: 'Australia/Sydney (AEST/AEDT)',
+    publicHolidays: ['2026-01-01', '2026-01-26', '2026-04-03', '2026-04-06', '2026-04-25', '2026-12-25'],
+    workingWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    securityPolicy: {
+      mfaRequired: true,
+      sessionTimeoutMinutes: 15,
+      passwordExpiryDays: 60,
+    },
+    aiSettings: {
+      enabled: true,
+      modelAlias: 'gemini-3.6-flash',
+      autoAssist: true,
+    }
+  }
+];
+
 export const initialCampuses: Campus[] = [
   {
     id: 'CAMP-01',
@@ -266,6 +289,136 @@ export const initialPatients: Patient[] = [
       { id: 'ALT-6', alertType: 'Fall Risk', details: 'Sedated ICU patient', severity: 'Critical', createdAt: '2026-08-08', createdBy: 'ICU Team' }
     ],
     consents: []
+  },
+  {
+    id: 'PAT-1008',
+    mrn: 'MRN-88208',
+    firstName: 'Amelia',
+    lastName: 'Watson',
+    dateOfBirth: '1995-01-22',
+    gender: 'Female',
+    mobileNumber: '+61 411 223 344',
+    email: 'amelia.w@example.com',
+    address: '77 Oxford Street, Paddington NSW',
+    identificationType: 'Medicare',
+    identificationNumber: '3341-99881-2',
+    status: 'Active',
+    foodAllergies: ['Tree nuts'],
+    drugAllergies: ['Cephalosporins'],
+    registeredAt: '2026-08-11T11:40:00Z',
+    emergencyContact: { name: 'Oliver Watson', relationship: 'Brother', phone: '+61 411 776 655', validated: true },
+    alerts: [
+      { id: 'ALT-7', alertType: 'Allergy', details: 'Severe Cephalosporin allergy (hives & bronchospasm)', severity: 'High', createdAt: '2026-08-11', createdBy: 'Dr. Rostova' }
+    ],
+    consents: [{ id: 'CNS-7', consentType: 'Treatment', accepted: true, version: 'v2.1', signedAt: '2026-08-11' }]
+  },
+  {
+    id: 'PAT-1009',
+    mrn: 'MRN-88209',
+    firstName: 'Harrison',
+    lastName: 'Ford',
+    dateOfBirth: '1942-07-13',
+    gender: 'Male',
+    mobileNumber: '+61 418 554 433',
+    email: 'h.ford@example.com',
+    address: '99 Pacific Highway, North Sydney',
+    identificationType: 'Medicare',
+    identificationNumber: '1120-44912-3',
+    status: 'Active',
+    foodAllergies: [],
+    drugAllergies: ['Latex'],
+    registeredAt: '2026-08-07T18:15:00Z',
+    emergencyContact: { name: 'Calista Flockhart', relationship: 'Spouse', phone: '+61 418 000 111', validated: true },
+    alerts: [
+      { id: 'ALT-8', alertType: 'Infection Risk', details: 'Airborne Covid-19 Positive - Requires Negative Pressure Suite', severity: 'Critical', createdAt: '2026-08-07', createdBy: 'Infection Control' },
+      { id: 'ALT-9', alertType: 'Allergy', details: 'Latex hypersensitivity', severity: 'High', createdAt: '2026-08-07', createdBy: 'RN Baker' }
+    ],
+    consents: [{ id: 'CNS-8', consentType: 'Treatment', accepted: true, version: 'v2.1', signedAt: '2026-08-07' }]
+  },
+  {
+    id: 'PAT-1010',
+    mrn: 'MRN-88210',
+    firstName: 'James',
+    lastName: 'Carter',
+    dateOfBirth: '1979-10-04',
+    gender: 'Male',
+    mobileNumber: '+61 405 667 788',
+    email: 'jcarter@example.com',
+    address: '22 Ocean Avenue, Manly NSW',
+    identificationType: 'Driver Licence',
+    identificationNumber: 'DL-772819',
+    status: 'Active',
+    foodAllergies: [],
+    drugAllergies: [],
+    registeredAt: '2026-08-13T04:20:00Z',
+    alerts: [],
+    consents: [{ id: 'CNS-9', consentType: 'Treatment', accepted: true, version: 'v2.1', signedAt: '2026-08-13' }]
+  },
+  {
+    id: 'PAT-1011',
+    mrn: 'MRN-88211',
+    firstName: 'Linda',
+    lastName: 'O\'Connor',
+    dateOfBirth: '1959-03-29',
+    gender: 'Female',
+    mobileNumber: '+61 414 990 011',
+    email: 'linda.oc@example.com',
+    address: '5 Crown Street, Surry Hills NSW',
+    identificationType: 'Medicare',
+    identificationNumber: '5561-22990-1',
+    status: 'Active',
+    foodAllergies: ['Dairy'],
+    drugAllergies: ['NSAIDs', 'Ibuprofen'],
+    registeredAt: '2026-08-13T06:05:00Z',
+    emergencyContact: { name: 'Sean O\'Connor', relationship: 'Spouse', phone: '+61 414 332 211', validated: true },
+    alerts: [
+      { id: 'ALT-10', alertType: 'Fall Risk', details: 'Post-syncopal episode, high fall risk', severity: 'High', createdAt: '2026-08-13', createdBy: 'ED Triage' }
+    ],
+    consents: [{ id: 'CNS-10', consentType: 'Treatment', accepted: true, version: 'v2.1', signedAt: '2026-08-13' }]
+  },
+  {
+    id: 'PAT-1012',
+    mrn: 'MRN-88212',
+    firstName: 'Benjamin',
+    lastName: 'Zhang',
+    dateOfBirth: '2001-12-14',
+    gender: 'Male',
+    mobileNumber: '+61 423 889 900',
+    email: 'ben.zhang@example.com',
+    address: '14 University Row, Camperdown',
+    identificationType: 'Passport',
+    identificationNumber: 'CHN-998120',
+    status: 'Active',
+    preferredLanguage: 'Mandarin',
+    interpreterRequired: true,
+    interpreterType: 'Mandarin Medical Interpreter',
+    foodAllergies: ['Sesame'],
+    drugAllergies: [],
+    registeredAt: '2026-08-12T19:30:00Z',
+    alerts: [],
+    consents: [{ id: 'CNS-11', consentType: 'Treatment', accepted: true, version: 'v2.1', signedAt: '2026-08-12' }]
+  },
+  {
+    id: 'PAT-1013',
+    mrn: 'MRN-88213',
+    firstName: 'Chloe',
+    lastName: 'Nightingale',
+    dateOfBirth: '1998-06-18',
+    gender: 'Female',
+    mobileNumber: '+61 431 223 344',
+    email: 'chloe.n@example.com',
+    address: '67 Bellevue Road, Double Bay',
+    identificationType: 'Medicare',
+    identificationNumber: '7821-44512-1',
+    status: 'Active',
+    foodAllergies: [],
+    drugAllergies: ['Erythromycin'],
+    registeredAt: '2026-08-13T10:00:00Z',
+    emergencyContact: { name: 'Dr. Sarah Nightingale', relationship: 'Mother', phone: '+61 431 888 777', validated: true },
+    alerts: [
+      { id: 'ALT-11', alertType: 'Allergy', details: 'QT Prolongation risk with Macrolides', severity: 'Critical', createdAt: '2026-08-13', createdBy: 'Pharmacy' }
+    ],
+    consents: [{ id: 'CNS-12', consentType: 'Treatment', accepted: true, version: 'v2.1', signedAt: '2026-08-13' }]
   }
 ];
 

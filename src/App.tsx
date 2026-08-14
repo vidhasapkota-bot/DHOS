@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import {
   initialHospitalConfig,
+  initialHospitals,
   initialSurgeStatus,
   initialExecutiveDecisions,
+  initialCampuses,
+  initialBuildings,
+  initialDepartments,
   initialBeds,
   initialWards,
   initialPatients,
@@ -40,11 +44,18 @@ import { FacilitiesBiomedicalView } from './components/FacilitiesBiomedicalView'
 import { SupplyChainView } from './components/SupplyChainView';
 import { WorkforceView } from './components/WorkforceView';
 import { GRACView } from './components/GRACView';
+import { CampusConfigView } from './components/CampusConfigView';
 
 import { AIAssistantModal } from './components/AIAssistantModal';
 import { BreakGlassModal } from './components/BreakGlassModal';
+import { UniversalSearchModal } from './components/UniversalSearchModal';
+import { NewPatientModal } from './components/NewPatientModal';
 
 import {
+  Campus,
+  Building,
+  Department,
+  HospitalConfig,
   Bed,
   Ward,
   Patient,
@@ -71,6 +82,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>('command-centre');
 
   // Application Domain States
+  const [hospitals, setHospitals] = useState<HospitalConfig[]>(initialHospitals);
+  const [hospitalConfig, setHospitalConfig] = useState<HospitalConfig>(initialHospitalConfig);
+  const [campuses, setCampuses] = useState<Campus[]>(initialCampuses);
+  const [buildings, setBuildings] = useState<Building[]>(initialBuildings);
+  const [departments, setDepartments] = useState<Department[]>(initialDepartments);
   const [surgeStatus, setSurgeStatus] = useState<HospitalSurgeStatus>(initialSurgeStatus);
   const [executiveDecisions, setExecutiveDecisions] = useState<ExecutiveDecision[]>(initialExecutiveDecisions);
   const [beds, setBeds] = useState<Bed[]>(initialBeds);
@@ -94,9 +110,23 @@ export default function App() {
   // Modal & Navigation Drawer States
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isBreakGlassModalOpen, setIsBreakGlassModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isNewPatientModalOpen, setIsNewPatientModalOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [breakGlassActive, setBreakGlassActive] = useState(false);
   const [breakGlassReason, setBreakGlassReason] = useState<string | null>(null);
+
+  // Global Keyboard Shortcut for Search (Cmd+K / Ctrl+K)
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchModalOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Handler Functions
 
@@ -293,6 +323,64 @@ export default function App() {
     setSurgeStatus(prev => ({ ...prev, activeCode: code }));
   };
 
+  const handleRegisterPatientRecord = (patientData: Partial<Patient>, admissionData?: { wardId?: string; bedId?: string; triageCategory?: number; complaint?: string }) => {
+    const nextIndex = patients.length + 1;
+    const newMrn = `MRN-882${nextIndex < 10 ? '0' + nextIndex : nextIndex}`;
+    const newPatient: Patient = {
+      id: `PAT-${1000 + nextIndex}`,
+      mrn: newMrn,
+      firstName: patientData.firstName || 'New',
+      lastName: patientData.lastName || 'Patient',
+      dateOfBirth: patientData.dateOfBirth || '1990-01-01',
+      gender: patientData.gender || 'Other',
+      mobileNumber: patientData.mobileNumber || '+61 400 000 000',
+      email: patientData.email || '',
+      address: patientData.address || 'Metro Healthcare District',
+      identificationType: patientData.identificationType || 'Medicare',
+      identificationNumber: patientData.identificationNumber || `MED-${Math.floor(100000 + Math.random() * 900000)}`,
+      status: 'Active',
+      preferredLanguage: patientData.preferredLanguage || 'English',
+      interpreterRequired: patientData.interpreterRequired || false,
+      emergencyContact: patientData.emergencyContact,
+      foodAllergies: patientData.foodAllergies || [],
+      drugAllergies: patientData.drugAllergies || [],
+      registeredAt: new Date().toISOString(),
+      alerts: (patientData.drugAllergies && patientData.drugAllergies.length > 0)
+        ? [{
+            id: `ALT-${Math.floor(100 + Math.random() * 900)}`,
+            alertType: 'Allergy',
+            details: `Known Allergy: ${patientData.drugAllergies.join(', ')}`,
+            severity: 'High',
+            createdAt: new Date().toISOString().split('T')[0],
+            createdBy: 'Admissions Desk'
+          }]
+        : [],
+      consents: [
+        { id: `CNS-${Math.floor(100 + Math.random() * 900)}`, consentType: 'Treatment', accepted: true, version: 'v2.1', signedAt: new Date().toISOString().split('T')[0] },
+        { id: `CNS-${Math.floor(100 + Math.random() * 900)}`, consentType: 'Privacy', accepted: true, version: 'v1.0', signedAt: new Date().toISOString().split('T')[0] }
+      ]
+    };
+
+    setPatients(prev => [newPatient, ...prev]);
+
+    if (admissionData?.triageCategory || admissionData?.complaint) {
+      handleAddTriageEncounter({
+        patientName: `${newPatient.firstName} ${newPatient.lastName}`,
+        patientAge: 35,
+        patientGender: newPatient.gender,
+        arrivalMethod: 'Walk-in',
+        presentingComplaint: admissionData.complaint || 'Emergency triage admission',
+        triageCategory: (admissionData.triageCategory as any) || 3
+      });
+      setActiveTab('emergency');
+    } else if (admissionData?.bedId) {
+      handleAssignBed(admissionData.bedId, `${newPatient.firstName} ${newPatient.lastName}`, newMrn, 'General Medicine');
+      setActiveTab('beds');
+    } else {
+      setActiveTab('patients');
+    }
+  };
+
   const handleLogDecision = (title: string, rationale: string, exec: string, depts: string[]) => {
     const newDecision: ExecutiveDecision = {
       id: `DEC-${Math.floor(100 + Math.random() * 900)}`,
@@ -306,17 +394,69 @@ export default function App() {
     setExecutiveDecisions(prev => [newDecision, ...prev]);
   };
 
+  const handleAddHospital = (newHospital: HospitalConfig) => {
+    setHospitals(prev => [...prev, newHospital]);
+    setHospitalConfig(newHospital);
+  };
+
+  const handleSelectHospital = (hospId: string) => {
+    const selected = hospitals.find(h => h.id === hospId);
+    if (selected) {
+      setHospitalConfig(selected);
+    }
+  };
+
+  const handleAddCampus = (newCampus: Campus) => {
+    setCampuses(prev => [...prev, newCampus]);
+  };
+
+  const handleAddBuilding = (newBuilding: Building) => {
+    setBuildings(prev => [...prev, newBuilding]);
+    // update campus building count
+    setCampuses(prev => prev.map(c => c.id === newBuilding.campusId ? {
+      ...c,
+      buildingsCount: c.buildingsCount + 1
+    } : c));
+  };
+
+  const handleAddDepartment = (newDepartment: Department) => {
+    setDepartments(prev => [...prev, newDepartment]);
+  };
+
+  const handleAddWard = (newWard: Ward) => {
+    setWards(prev => [...prev, newWard]);
+  };
+
+  const handleAddBed = (newBed: Bed) => {
+    setBeds(prev => [...prev, newBed]);
+  };
+
+  const handleUpdateCampusStatus = (campusId: string, status: Campus['status']) => {
+    setCampuses(prev => prev.map(c => c.id === campusId ? { ...c, status } : c));
+  };
+
+  const handleUpdateHospitalConfig = (updated: Partial<HospitalConfig>) => {
+    setHospitalConfig(prev => ({ ...prev, ...updated }));
+  };
+
+  const handleUpdateDepartmentEscalation = (depId: string, manager: string, escalationRule: string) => {
+    setDepartments(prev => prev.map(d => d.id === depId ? { ...d, manager, escalationRule } : d));
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
       {/* Top Application Header & Operational Bar */}
       <Header
-        config={initialHospitalConfig}
+        config={hospitalConfig}
+        hospitals={hospitals}
+        onSelectHospital={handleSelectHospital}
         surgeStatus={surgeStatus}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onOpenNewPatient={() => setActiveTab('patients')}
+        onOpenNewPatient={() => setIsNewPatientModalOpen(true)}
         onOpenBreakGlass={() => setIsBreakGlassModalOpen(true)}
         onOpenAIAssistant={() => setIsAiModalOpen(true)}
+        onOpenSearch={() => setIsSearchModalOpen(true)}
         onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
         criticalAlertsCount={
           (diagnosticOrders || []).filter(d => d.isCriticalResult).length +
@@ -354,18 +494,8 @@ export default function App() {
         {(activeTab === 'patient-registration' || activeTab === 'patients') && (
           <PatientRegistrationView
             patients={patients}
-            onRegisterPatient={(pData) => {
-              // Auto assign to ED or Ward
-              handleAddTriageEncounter({
-                patientName: pData.patientName,
-                patientAge: pData.patientAge,
-                patientGender: pData.gender,
-                arrivalMethod: 'Walk-in',
-                presentingComplaint: pData.presentingComplaint,
-                triageCategory: 4
-              });
-              setActiveTab('emergency');
-            }}
+            onRegisterPatient={handleRegisterPatientRecord}
+            onOpenNewPatientModal={() => setIsNewPatientModalOpen(true)}
           />
         )}
 
@@ -485,6 +615,28 @@ export default function App() {
             }}
           />
         )}
+
+        {(activeTab === 'campus-config' || activeTab === 'campus' || activeTab === 'campuses' || activeTab === 'enterprise') && (
+          <CampusConfigView
+            config={hospitalConfig}
+            hospitals={hospitals}
+            campuses={campuses}
+            buildings={buildings}
+            departments={departments}
+            wards={wards}
+            beds={beds}
+            onSelectHospital={handleSelectHospital}
+            onAddHospital={handleAddHospital}
+            onAddCampus={handleAddCampus}
+            onAddBuilding={handleAddBuilding}
+            onAddDepartment={handleAddDepartment}
+            onAddWard={handleAddWard}
+            onAddBed={handleAddBed}
+            onUpdateCampusStatus={handleUpdateCampusStatus}
+            onUpdateHospitalConfig={handleUpdateHospitalConfig}
+            onUpdateDepartmentEscalation={handleUpdateDepartmentEscalation}
+          />
+        )}
       </main>
       </div>
 
@@ -506,6 +658,24 @@ export default function App() {
         isOpen={isBreakGlassModalOpen}
         onClose={() => setIsBreakGlassModalOpen(false)}
         onExecuteBreakGlass={handleExecuteBreakGlass}
+      />
+
+      {/* Universal Search Modal (Cmd+K / Ctrl+K) */}
+      <UniversalSearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+        patients={patients}
+        beds={beds}
+        wards={wards}
+        onNavigateTab={setActiveTab}
+      />
+
+      {/* New Patient Registration & Admission Modal (WF-011) */}
+      <NewPatientModal
+        isOpen={isNewPatientModalOpen}
+        onClose={() => setIsNewPatientModalOpen(false)}
+        onRegister={handleRegisterPatientRecord}
+        availableBeds={beds}
       />
     </div>
   );
