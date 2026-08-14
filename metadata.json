@@ -1,0 +1,6 @@
+{
+  "name": "DHOS Hospital Management Suite",
+  "description": "Digital Hospital Operating System - Enterprise Hospital Management Application Suite covering Clinical, Operational, Administrative, Logistics & AI Workflows.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
