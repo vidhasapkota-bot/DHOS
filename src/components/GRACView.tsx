@@ -14,12 +14,11 @@ import {
   FileSpreadsheet
 } from 'lucide-react';
 import { GovernanceIncident } from '../types/dhos';
-import { ActiveUser, UserRole } from '../types/rbac';
 
 interface GRACViewProps {
   incidents: GovernanceIncident[];
   onReportIncident: (incident: Partial<GovernanceIncident>) => void;
-  currentUser?: ActiveUser;
+  currentUser?: { name?: string; role?: string };
   onNavigateToRBAC?: () => void;
 }
 

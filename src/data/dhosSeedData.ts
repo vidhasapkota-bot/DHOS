@@ -98,6 +98,7 @@ export const initialBuildings: Building[] = [
 ];
 
 export const initialDepartments: Department[] = [
+  // St. Jude Metropolitan Hospital (HOSP-001)
   { id: 'DEP-ED', name: 'Emergency Department', code: 'ED', manager: 'Dr. Sarah Jenkins', workingHours: '24/7 Continuous', escalationRule: 'Escalate to ED Director if wait time > 60m', hospitalId: 'HOSP-001' },
   { id: 'DEP-ICU', name: 'Intensive Care & Critical Care', code: 'ICU', manager: 'Dr. Marcus Vance', workingHours: '24/7 Continuous', escalationRule: 'Escalate to Intensivist Consultant on 100% bed occupancy', hospitalId: 'HOSP-001' },
   { id: 'DEP-SURG', name: 'Surgical Services & Operating Theatres', code: 'OT', manager: 'Dr. Robert Chen', workingHours: '07:00 - 23:00 + 24/7 On-Call', escalationRule: 'Escalate to OT Coordinator if delay > 30m', hospitalId: 'HOSP-001' },
@@ -108,6 +109,15 @@ export const initialDepartments: Department[] = [
   { id: 'DEP-LOG', name: 'Patient Transport & Logistics', code: 'LOG', manager: 'James Wilson', workingHours: '24/7 Continuous', escalationRule: 'Escalate urgent transport wait > 20m', hospitalId: 'HOSP-001' },
   { id: 'DEP-BIOMED', name: 'Biomedical Engineering', code: 'BIOMED', manager: 'Eng. Alex Patel', workingHours: '08:00 - 18:00 + On-Call', escalationRule: 'Escalate ventilator/defibrillator failure immediately', hospitalId: 'HOSP-001' },
   { id: 'DEP-SUPPLY', name: 'Supply Chain & Warehouse', code: 'SUPPLY', manager: 'Karen Smith', workingHours: '06:00 - 18:00', escalationRule: 'Reorder alert triggered on critical shortage', hospitalId: 'HOSP-001' },
+
+  // Royal Northern Health Network (HOSP-002)
+  { id: 'DEP-RN-ED', name: 'Emergency & Trauma Services', code: 'RN-ED', manager: 'Dr. Katherine Bell', workingHours: '24/7 Continuous', escalationRule: 'Escalate to Regional Trauma Director if capacity > 90%', hospitalId: 'HOSP-002' },
+  { id: 'DEP-RN-ICU', name: 'Critical Care Complex', code: 'RN-ICU', manager: 'Dr. Gregory House', workingHours: '24/7 Continuous', escalationRule: 'Escalate ECMO/ventilator surges immediately', hospitalId: 'HOSP-002' },
+  { id: 'DEP-RN-SURG', name: 'General & Orthopaedic Surgery', code: 'RN-SURG', manager: 'Dr. Neil Melendez', workingHours: '07:00 - 22:00 + 24/7 Trauma', escalationRule: 'Notify On-Call Anaesthetist on emergency booking', hospitalId: 'HOSP-002' },
+  { id: 'DEP-RN-MED', name: 'Internal Medicine & Pulmonology', code: 'RN-MED', manager: 'Dr. Allison Cameron', workingHours: '24/7 Continuous', escalationRule: 'Escalate subspecialty consult overdue > 4h', hospitalId: 'HOSP-002' },
+  { id: 'DEP-RN-PHARM', name: 'Inpatient Pharmacy & Dispensary', code: 'RN-PHARM', manager: 'Pharm. Lisa Cuddy', workingHours: '06:30 - 22:00', escalationRule: 'Escalate high-risk medication verification delay', hospitalId: 'HOSP-002' },
+  { id: 'DEP-RN-DIAG', name: 'Radiology & Molecular Pathology', code: 'RN-DIAG', manager: 'Dr. Eric Foreman', workingHours: '24/7 Continuous', escalationRule: 'Urgent CT/MRI reporting escalation SLA 30m', hospitalId: 'HOSP-002' },
+  { id: 'DEP-RN-EVS', name: 'Infection Prevention & EVS', code: 'RN-EVS', manager: 'Carlos Rivera', workingHours: '24/7 Shifted', escalationRule: 'Terminal clean SLA escalation at 40m', hospitalId: 'HOSP-002' },
 ];
 
 export const initialWards: Ward[] = [
